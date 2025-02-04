@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Онлайн курс</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        p {
+            color: #666;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" onkeydown="return disableKeys(event)">
+    <div class="container">
+        <h1>Онлайн курс по программированию</h1>
+        <p>Изучите основы программирования и создайте свой первый проект.</p>
+        <p><strong>Цена:</strong> 1000 руб.</p>
+        <button class="btn" id="checkout-button">Купить курс</button>
+        <a href="/profile.html" class="btn">Личный кабинет</a>
+    </div>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        // Защита от копирования контента
+        function disableKeys(e) {
+            if (e.ctrlKey || e.keyCode === 123) {
+                e.preventDefault();
+                return false;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const stripe = Stripe('your_stripe_public_key'); // Замените на ваш публичный ключ Stripe
+            const checkoutButton = document.getElementById('checkout-button');
+
+            checkoutButton.addEventListener('click', async () => {
+                const response = await fetch('/api/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ price: 100000 }), // Цена в копейках (или центах)
+                });
+
+                const session = await response.json();
+
+                const result = await stripe.redirectToCheckout({
+                    sessionId: session.id,
+                });
+
+                if (result.error) {
+                    alert(result.error.message);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

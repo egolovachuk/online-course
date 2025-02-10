@@ -1,2 +1,4 @@
 node_modules/
 .env
+requirements.md
+test-db.js

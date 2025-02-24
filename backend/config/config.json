@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "edward",
+    "password": null,
+    "database": "online_courses",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "edward",
+    "password": null,
+    "database": "online_courses",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "edward",
+    "password": null,
+    "database": "online_courses",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}

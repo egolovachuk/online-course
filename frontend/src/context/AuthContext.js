@@ -1,56 +1,54 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// Создаем контекст аутентификации
 const AuthContext = createContext();
 
-// Провайдер контекста
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(localStorage.getItem('token')); // Получаем токен из localStorage
-  const navigate = useNavigate(); // Хук для навигации
+  const [token, setToken] = useState(localStorage.getItem('token'));
+  const navigate = useNavigate();
 
-  // Сохраняем токен в localStorage при его изменении
-  useEffect(() => {
-    if (token) {
-      localStorage.setItem('token', token);
-    } else {
-      localStorage.removeItem('token');
-    }
-  }, [token]);
-
-  // Метод для входа
   const login = (newToken) => {
-    localStorage.setItem('token', newToken); // Убедитесь, что токен сохраняется
-    setToken(newToken); // Устанавливаем токен
-    navigate('/dashboard'); // Перенаправляем на страницу дашборда
+    if (!newToken) {
+      console.error('Ошибка: Токен не передан в метод login');
+      return;
+    }
+  
+    localStorage.setItem('token', newToken);
+    setToken(newToken);
+    console.log('Токен установлен:', newToken);
+  
+    // Задержка для обновления состояния
+    setTimeout(() => {
+      console.log('Перенаправляем на /dashboard');
+      navigate('/dashboard');
+    }, 0);
   };
 
-  // Метод для выхода
   const logout = () => {
-    setToken(null); // Очищаем токен
-    navigate('/login'); // Перенаправляем на страницу входа
+    localStorage.removeItem('token');
+    setToken(null);
+    navigate('/login');
   };
 
-  // Проверка токена при загрузке приложения
   useEffect(() => {
-    if (!token) {
-      navigate('/login', { replace: true }); // Перенаправляем на страницу входа, если токен отсутствует
+    if (!token && window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+      console.log('Токена нет. Перенаправляем на /login');
+      navigate('/login', { replace: true });
     }
   }, [token, navigate]);
 
-  // Значение контекста
-  const contextValue = {
-    token, // Текущий токен
-    login, // Метод для входа
-    logout, // Метод для выхода
-  };
+  useEffect(() => {
+    if (token) {
+      console.log('Токен найден. Перенаправляем на /dashboard');
+      navigate('/dashboard');
+    }
+  }, [token, navigate]);
 
   return (
-    <AuthContext.Provider value={contextValue}>
+    <AuthContext.Provider value={{ token, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Хук для использования контекста
 export const useAuth = () => useContext(AuthContext);

@@ -22,7 +22,8 @@ const User = sequelize.define('User', {
   },
 }, {
   timestamps: true,
-  underscored: true, // Используем snake_case вместо camelCase
+  underscored: true, // Использование snake_case вместо camelCase
+  tableName: 'Users', // Явно указываем имя таблицы
 });
 
 module.exports = User;

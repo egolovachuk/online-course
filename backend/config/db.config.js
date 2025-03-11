@@ -7,7 +7,7 @@ const sequelize = new Sequelize({
   username: process.env.DB_USER || 'edward',
   password: process.env.DB_PASSWORD || '',
   database: process.env.DB_NAME || 'online_courses',
-  logging: false, // Отключаем логирование SQL-запросов
+  logging: console.log, // Логируем SQL-запросы
 });
 
 module.exports = sequelize;
